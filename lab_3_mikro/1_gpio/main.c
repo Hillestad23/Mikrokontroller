@@ -1,6 +1,6 @@
 #include <stdint.h>
 
-#define GPIO ((NRF_GPIO_REGS*)__GPIO_BASE_ADDRESS__)
+#define GPIO ((NRF_GPIO_REGS*)0x50000000)
 
 typedef struct {
 	volatile uint32_t RESERVED0[321];
@@ -13,29 +13,44 @@ typedef struct {
 	volatile uint32_t DIRCLR;
 	volatile uint32_t LATCH;
 	volatile uint32_t DETECTMODE;
-	volatile uint32_t RESERVED1[__RESERVED1_SIZE__];
+	volatile uint32_t RESERVED1[118];
 	volatile uint32_t PIN_CNF[32];
 } NRF_GPIO_REGS;
 
 void button_init(){ 
-	GPIO->PIN_CNF[__BUTTON_1_PIN__] = (3 << 2);
+	GPIO->PIN_CNF[13] = (3 << 2);
+	GPIO->PIN_CNF[14] = (3 << 2);
+	GPIO->PIN_CNF[17] = 1;
+	GPIO->PIN_CNF[18] = 1;
+	GPIO->PIN_CNF[19] = 1;
+	GPIO->PIN_CNF[20] = 1;
 	// Fill inn the configuration for the remaining buttons 
 }
 
 int main(){
 	// Configure LED Matrix
-	for(int i = 17; i <= 20; i++){
-		GPIO->DIRSET = (1 << i);
-		GPIO->OUTCLR = (1 << i);
-	}
+	// for(int i = 17; i <= 20; i++){
+	// 	GPIO->DIRSET = (1 << i);
+	// 	GPIO->OUTCLR = (1 << i);
+	// }
 
 	// Configure buttons -> see button_init()
 
 	int sleep = 0;
 	while(1){
 
-		/* Check if button 1 is pressed;
-		 * turn on LED matrix if it is. */
+		if(!(GPIO->IN) & (1<<13)){
+			GPIO->OUTSET |= (1<<17);
+			GPIO->OUTSET |= (1<<18);
+			GPIO->OUTSET |= (1<<19);  
+			GPIO->OUTSET |= (1<<20); //evt droppe |
+		}
+		if(!(GPIO->IN) & (1<<14)){
+			GPIO->OUTCLR |= (1<<17);
+			GPIO->OUTCLR |= (1<<18);
+			GPIO->OUTCLR |= (1<<19);
+			GPIO->OUTCLR |= (1<<20); //evt droppe |
+		}
 
 		/* Check if button 2 is pressed;
 		 * turn off LED matrix if it is. */
@@ -45,3 +60,4 @@ int main(){
 	}
 	return 0;
 }
+
