@@ -35,21 +35,22 @@ int main(){
 	// }
 
 	// Configure buttons -> see button_init()
+	button_init();
 
 	int sleep = 0;
 	while(1){
 
-		if(!(GPIO->IN) & (1<<13)){
-			GPIO->OUTSET |= (1<<17);
-			GPIO->OUTSET |= (1<<18);
-			GPIO->OUTSET |= (1<<19);  
-			GPIO->OUTSET |= (1<<20); //evt droppe |
-		}
-		if(!(GPIO->IN) & (1<<14)){
+		if(!(1 & (GPIO->IN) >> 13)){
 			GPIO->OUTCLR |= (1<<17);
 			GPIO->OUTCLR |= (1<<18);
-			GPIO->OUTCLR |= (1<<19);
-			GPIO->OUTCLR |= (1<<20); //evt droppe |
+			GPIO->OUTCLR |= (1<<19);  
+			GPIO->OUTCLR |= (1<<20);
+		}
+		else if(!(1 & (GPIO->IN) >> 14)){
+			GPIO->OUTSET |= (1<<17);
+			GPIO->OUTSET |= (1<<18);
+			GPIO->OUTSET |= (1<<19);
+			GPIO->OUTSET |= (1<<20);
 		}
 
 		/* Check if button 2 is pressed;
