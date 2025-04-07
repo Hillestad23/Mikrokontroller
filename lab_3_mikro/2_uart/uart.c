@@ -15,23 +15,24 @@ void uart_init(){
     UART->PSELCTS = 0xFFFFFFFF;
 
     UART->ENABLE = 4;
-    UART->TASK_STARTRX = 1; //Sjekk om det stemmer
+    UART->TASKS_STARTRX = 1;
 }
 
 void uart_send(char letter){
+    UART->TASKS_STARTTX = 1;
     UART->TXD = letter;
     while(!(UART->EVENTS_TXDRDY)){
-        UART->EVENTS_TXDRDY = 0;
     }
-    UART->TASK_STOPTX = 1;
+    UART->TASKS_STOPTX = 1;
+    UART->EVENTS_TXDRDY = 0;
 }
 
 char uart_read(){
-    while(!(UART->EVENTS_TXDRDY)){
-        UART->EVENTS_TXDRDY = 0;
+    UART->TASKS_STARTRX = 1;
+    char letter = 0;
+    if(UART->EVENTS_RXDRDY){
+        letter=UART->RXD;
     }
-    if(UART->RXD == ""){
-        return "\0";
-    }
-    return UART->RXD;
+    UART->EVENTS_RXDRDY = 0;
+    return letter;
 }
