@@ -39,7 +39,6 @@ int main(){
 	int sleep = 0;
 	uart_init();
 	int led_check = 0;
-	int a,b;
 	while(1){
 		if(!(1 & (GPIO->IN) >> 13)){
 			uart_send('A');
@@ -50,6 +49,7 @@ int main(){
 		else if(!(1 & (GPIO->IN) >> 15)){
 			iprintf("The average grade in TTK%d in %d was: %c\n\r", 4235, 2022, 'B');
 		}
+		/*
 		else if(!(1 & (GPIO->IN) >> 16)){
             iprintf("Enter one integer:\n\r");
             scanf("%d", &a);
@@ -57,24 +57,24 @@ int main(){
             scanf("%d", &b);
             iprintf("%d * %d = %d\n\r", a, b, a*b);
         }
+		*/
 		
 		if(uart_read()!=0 && led_check==0){
-			GPIO->OUTCLR = (1<<17);
-			GPIO->OUTCLR = (1<<18);
-			GPIO->OUTCLR = (1<<19);  
-			GPIO->OUTCLR = (1<<20);
+			GPIO->OUTCLR |= (1<<17);
+			GPIO->OUTCLR |= (1<<18);
+			GPIO->OUTCLR |= (1<<19);  
+			GPIO->OUTCLR |= (1<<20);
 			led_check=1;
 			uart_send('k');
 
 		}
 		else if(uart_read()!=0 && led_check==1){			
-			GPIO->OUTSET = (1<<17);
-			GPIO->OUTSET = (1<<18);
-			GPIO->OUTSET = (1<<19);
-			GPIO->OUTSET = (1<<20);
+			GPIO->OUTSET |= (1<<17);
+			GPIO->OUTSET |= (1<<18);
+			GPIO->OUTSET |= (1<<19);
+			GPIO->OUTSET |= (1<<20);
 			led_check=0;
 			uart_send('R');
-
 		}
 		sleep = 1000000;
 		while(--sleep); 

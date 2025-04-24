@@ -8,7 +8,8 @@ void button_init(){
 
 void LEDmatrix_init(){
     for(int i = 17; i <= 20; i++){
-        GPIO->DIRSET = (1 << i);
+        GPIO->PIN_CNF[i] = (1 << 0);
+        GPIO->OUTSET = (1 << i);
     }
 }
 
@@ -17,6 +18,7 @@ int main(){
     LEDmatrix_init();
     gpiote_init();
     ppi_init();
-    while(1){};
+    while(1){
+    };
     return 0;
 }
